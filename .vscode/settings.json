@@ -1,0 +1,20 @@
+{
+    "idf.portWin": "COM18",
+    "idf.flashType": "UART",
+    "idf.customExtraVars": {
+        "OPENOCD_SCRIPTS": "D:\\env\\Espressif\\tools\\openocd-esp32\\v0.11.0-esp32-20221026/openocd-esp32/share/openocd/scripts",
+        "IDF_CCACHE_ENABLE": "1",
+        "ESP_ROM_ELF_DIR": "D:\\env\\esp-idf\\tools\\esp-rom-elfs\\20220823/",
+        "IDF_TARGET": "esp32s3"
+    },
+    "idf.openOcdConfigs": [
+        "board/esp32s3-builtin.cfg"
+    ],
+    "files.associations": {
+        "*.qmd": "markdown",
+        "*.md": "markdown",
+        "freertos.h": "c",
+        "sdkconfig.h": "c"
+    },
+    "idf.flashBaudRate": "460800"
+}

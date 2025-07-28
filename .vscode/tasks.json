@@ -1,0 +1,80 @@
+{
+    // 任务系统版本，必须是 2.0.0
+    "version": "2.0.0",
+    // 所有任务定义数组
+    "tasks": [
+        // =========================
+        // 💡 任务 1：编译当前活动文件 >> 这个任务会根据项目动态调整编译器参数!!!!!! <<
+        // =========================
+        {
+            "type": "cppbuild", // VS Code C/C++ 插件使用的任务类型
+            "label": "C/C++: xtensa-esp32s3-elf-gcc.exe 生成活动文件", // 任务名称，会在任务列表中显示
+            "command": "d:\\env\\esp32\\esp-idf-Tools\\tools\\xtensa-esp-elf\\esp-14.2.0_20240906\\xtensa-esp-elf\\bin\\xtensa-esp32s3-elf-gcc.exe", // 调用的编译器
+            "args": [
+                "-fdiagnostics-color=always", // 彩色输出编译错误
+                "-g", // 生成调试信息
+                "${file}", // 当前编辑的源文件
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe" // 输出文件，与源文件同目录同名
+            ],
+            "options": {
+                "cwd": "d:\\env\\esp32\\esp-idf-Tools\\tools\\xtensa-esp-elf\\esp-14.2.0_20240906\\xtensa-esp-elf\\bin" // 设置当前工作目录为工具链目录
+            },
+            "problemMatcher": [
+                "$gcc" // 用于 VS Code 识别 GCC 错误并在编辑器中高亮显示
+            ],
+            "group": {
+                "kind": "build", // 表示这是一个构建任务
+                "isDefault": true // 默认构建任务（Ctrl+Shift+B）
+            },
+            "detail": "调试器生成的任务。" // 备注
+        },
+        // =========================
+        // 🚀 任务 2：启动 OpenOCD（调试器服务器）  >> 注意编译器和芯片的匹配!!!! <<
+        // =========================
+        {
+            "label": "start-openocd", // 任务名称
+            "type": "shell", // 使用 shell 命令运行
+            "command": "cmd.exe", // 启动 cmd
+            "args": [
+                "/c", // 执行命令并退出
+                "call export.bat && D:\\env\\esp32\\esp-idf-Tools\\tools\\openocd-esp32\\v0.12.0-esp32-20241016\\openocd-esp32\\bin\\openocd.exe -f board/esp32s3-builtin.cfg"
+                // 先调用环境配置脚本 export.bat，再执行 openocd，加载 ESP32-S3 JTAG 配置
+            ],
+            "isBackground": true, // 任务在后台运行，不会阻塞其他任务
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": ".*Info : \\[esp32s3.cpu0\\] Target halted.*", // 匹配目标停止信息，用于判断 openocd 成功启动
+                    "file": 1, // 占位，不实际使用
+                    "line": 1,
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": true, // 启动任务时立即开始监听
+                    "beginsPattern": ".*Open On-Chip Debugger.*", // 监听 openocd 启动标志
+                    "endsPattern": ".*Info : \\[esp32s3.cpu0\\] Target halted.*" // 监听启动完成标志
+                }
+            },
+            "presentation": {
+                "echo": true, // 是否显示命令
+                "reveal": "always", // 总是显示任务面板
+                "focus": false, // 启动时不自动聚焦
+                "panel": "shared" // 使用共享终端面板
+            }
+        },
+        // =========================
+        // ❌ 任务 3：强制终止 OpenOCD
+        // =========================
+        {
+            "label": "stop-openocd", // 任务名称
+            "type": "shell", // 使用 shell 命令
+            "command": "taskkill", // Windows 命令：终止进程
+            "args": [
+                "/IM", // 指定进程名
+                "openocd.exe",
+                "/F" // 强制终止
+            ],
+            "problemMatcher": [] // 无需匹配编译问题
+        }
+    ]
+}
