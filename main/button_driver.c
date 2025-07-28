@@ -11,6 +11,7 @@
 #define MAX_BUTTONS 10
 #define DOUBLE_CLICK_TIMEOUT pdMS_TO_TICKS(100)
 #define LONG_PRESS_TIMEOUT pdMS_TO_TICKS(500)
+#define DEBOUNCE_TIME_MS pdMS_TO_TICKS(20)
 
 typedef enum
 {
@@ -26,6 +27,7 @@ typedef struct
     TimerHandle_t long_press_timer;
     uint8_t click_count;
     TickType_t last_press_tick;
+    TickType_t last_event_tick; // 新增：记录上次事件时间，用于去抖
 } button_t;
 
 static button_t buttons[MAX_BUTTONS];
@@ -88,10 +90,18 @@ static void button_task(void *arg)
             if (!btn)
                 continue;
 
+            TickType_t now = xTaskGetTickCount();
+            if (now - btn->last_event_tick < DEBOUNCE_TIME_MS)
+            {
+                // 小于去抖时间，忽略此次事件
+                continue;
+            }
+            btn->last_event_tick = now;
+
             if (evt == EVENT_PRESS)
             {
                 btn->click_count++;
-                btn->last_press_tick = xTaskGetTickCount();
+                btn->last_press_tick = now;
                 xTimerStart(btn->long_press_timer, 0);
             }
             else if (evt == EVENT_RELEASE)
