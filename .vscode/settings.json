@@ -1,5 +1,5 @@
 {
-    "idf.portWin": "COM18",
+    "idf.portWin": "COM19",
     "idf.flashType": "UART",
     "idf.customExtraVars": {
         "OPENOCD_SCRIPTS": "D:\\env\\Espressif\\tools\\openocd-esp32\\v0.11.0-esp32-20221026/openocd-esp32/share/openocd/scripts",
