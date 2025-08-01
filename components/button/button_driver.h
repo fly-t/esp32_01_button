@@ -3,8 +3,6 @@
 
 #include "driver/gpio.h"
 
-
-
 #ifdef __cplusplus
 extern "C"
 {

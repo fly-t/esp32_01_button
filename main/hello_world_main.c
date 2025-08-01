@@ -47,5 +47,5 @@ void app_main(void)
 
     // 注册 GPIO0 按键，绑定回调
     button_register(GPIO_NUM_0, button1_callback);
-    button_register(GPIO_NUM_1, button2_callback);
+    button_register(GPIO_NUM_10, button2_callback);
 }
